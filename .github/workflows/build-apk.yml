@@ -1,0 +1,63 @@
+name: Build Khyber Supermarket Android
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  debug-apk:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.9"
+      - name: Build debug APK
+        run: gradle :app:assembleDebug
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Khyber-Supermarket-Test-APK
+          path: app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+
+  play-store-bundle:
+    if: ${{ github.event_name == 'workflow_dispatch' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.9"
+      - name: Check signing secrets
+        env:
+          KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+          STORE_PASSWORD: ${{ secrets.ANDROID_STORE_PASSWORD }}
+        run: |
+          test -n "$KEYSTORE_BASE64" || (echo 'Missing ANDROID_KEYSTORE_BASE64 secret' && exit 1)
+          test -n "$KEY_ALIAS" || (echo 'Missing ANDROID_KEY_ALIAS secret' && exit 1)
+          test -n "$KEY_PASSWORD" || (echo 'Missing ANDROID_KEY_PASSWORD secret' && exit 1)
+          test -n "$STORE_PASSWORD" || (echo 'Missing ANDROID_STORE_PASSWORD secret' && exit 1)
+          echo "$KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/release-key.jks"
+      - name: Build signed Android App Bundle
+        env:
+          ANDROID_KEYSTORE_PATH: ${{ runner.temp }}/release-key.jks
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+          ANDROID_STORE_PASSWORD: ${{ secrets.ANDROID_STORE_PASSWORD }}
+        run: gradle :app:bundleRelease
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Khyber-Supermarket-Play-Store-AAB
+          path: app/build/outputs/bundle/release/app-release.aab
+          if-no-files-found: error

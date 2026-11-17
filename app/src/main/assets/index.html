@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<meta name="theme-color" content="#17324d"><title>تنظیمات فروشگاه</title>
+<style>
+:root{--navy:#17324d;--blue:#2463a6;--bg:#f2f5f8;--ink:#172536;--muted:#68798a;--green:#16845b;--red:#c34848}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Tahoma,Arial,sans-serif;color:var(--ink)}
+header{background:linear-gradient(135deg,#17324d,#245b82);color:white;padding:22px 16px 26px;border-radius:0 0 24px 24px}
+header h1{font-size:20px;margin:0 0 7px}header .brand{display:flex;align-items:center;gap:12px}header .brand-logo{width:54px;height:54px;border-radius:13px;object-fit:cover;background:#fff;display:none;border:2px solid #ffffff66}header .brand-logo.visible{display:block}header p{margin:0;color:#d8e6f1;font-size:13px}
+.wrap{max-width:720px;margin:auto;padding:14px}.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:-10px}
+.stat,.panel{background:white;border-radius:15px;padding:15px;box-shadow:0 3px 14px #19334d0c}
+.stat small{color:var(--muted);font-size:12px}.stat strong{display:block;font-size:20px;margin-top:8px}
+.stat.total{grid-column:1/-1;background:#e5f2ec}.stat.total strong{color:var(--green)}
+nav{display:flex;gap:7px;margin:16px 0;overflow:auto}nav button{white-space:nowrap;flex:1}
+button{border:0;border-radius:11px;padding:12px 13px;background:var(--blue);color:white;font:inherit;font-size:14px;cursor:pointer}
+button.secondary{background:#e8eef4;color:var(--navy)}button.danger{background:#fae9e9;color:var(--red)}button.small{padding:8px 10px;font-size:12px}
+input{width:100%;padding:12px;border:1px solid #d7e0e8;border-radius:10px;font:inherit;background:white;margin:5px 0 11px}
+label{font-size:13px;color:#4e6071}.row{display:flex;gap:8px}.row>*{flex:1;min-width:0}
+.panel{margin-bottom:13px}.panel h2{font-size:17px;margin:0 0 13px}
+.customer{border:1px solid #e5ebf0;border-radius:12px;padding:12px;margin:9px 0;background:#fff}
+.customer-top{display:flex;justify-content:space-between;gap:10px;align-items:center}.customer strong{font-size:15px}
+.balance{font-weight:bold;color:var(--red);white-space:nowrap}.muted{font-size:12px;color:var(--muted);margin-top:5px}
+.actions{display:flex;gap:7px;margin-top:10px;flex-wrap:wrap}.hidden{display:none!important}
+.empty{text-align:center;color:var(--muted);padding:22px}.transaction{padding:10px 0;border-bottom:1px solid #edf0f3;display:flex;justify-content:space-between;gap:8px}
+.transaction:last-child{border:0}.plus{color:var(--red);font-weight:bold}.minus{color:var(--green);font-weight:bold}
+.login{min-height:70vh;display:flex;align-items:center;justify-content:center}.login .panel{width:100%;max-width:420px;padding:22px}
+.login h2{text-align:center;color:var(--navy)}.setup-screen{min-height:75vh;display:flex;align-items:center;justify-content:center}.setup-screen .panel{width:100%;max-width:440px;padding:22px}.logo-preview{width:96px;height:96px;border-radius:18px;border:2px dashed #b9c8d6;display:flex;align-items:center;justify-content:center;overflow:hidden;margin:10px auto 16px;color:#718397;background:#f7fafc}.logo-preview img{width:100%;height:100%;object-fit:cover}.setup-screen h2{text-align:center;color:var(--navy)}.login input{direction:ltr;text-align:left;font-family:Arial,sans-serif}
+.notice{font-size:12px;color:var(--muted);line-height:1.8}footer{text-align:center;color:#8794a1;font-size:11px;padding:12px}
+</style></head>
+<body>
+<header><div class="brand"><img id="shopLogo" class="brand-logo" alt="لوگوی فروشگاه"><div><h1 id="shopTitle">مدیریت فروشگاه</h1><p>سیستم مدیریت قرض مشتریان · کاملاً آفلاین</p></div></div></header>
+<main class="wrap">
+<section id="setupScreen" class="setup-screen"><div class="panel">
+<h2>تنظیم اولیه فروشگاه</h2><p class="notice">نام فروشگاه خود را وارد کنید. این نام در بالای برنامه نمایش داده می‌شود.</p>
+<label>نام سوپرمارکت</label><input id="shopNameInput" value="خوراکه فروشی سوپر مارکیت خیبر" placeholder="نام فروشگاه">
+<div class="logo-preview" id="logoPreview">لوگوی فروشگاه</div>
+<label>لوگوی فروشگاه (اختیاری)</label><input id="shopLogoInput" type="file" accept="image/*">
+<button style="width:100%" onclick="saveShopSetup()">ذخیره و ادامه</button>
+</div></section>
+<section id="loginScreen" class="login"><div class="panel">
+<h2>ورود به سیستم</h2><label>نام کاربری</label><input id="username" autocomplete="username" value="admin" dir="ltr">
+<label>رمز عبور</label><input id="password" type="password" autocomplete="current-password" placeholder="رمز را با حروف انگلیسی وارد کنید">
+<button style="width:100%" onclick="login()">ورود</button>
+<p class="notice">ورود اولیه: admin / Mohammad@1234<br>در نخستین ورود، رمز خود را تغییر دهید.</p>
+<div id="firstChange" class="hidden"><label>رمز جدید</label><input id="newPassword" type="password" dir="ltr" placeholder="حداقل ۸ حرف انگلیسی"><button onclick="changePassword()">ذخیره رمز جدید</button></div>
+</div></section>
+<section id="appScreen" class="hidden">
+<div class="stats">
+<div class="stat"><small>تعداد مشتریان</small><strong id="customerCount">۰</strong></div>
+<div class="stat"><small>مجموع دریافت‌ها</small><strong id="paidTotal">۰ افغانی</strong></div>
+<div class="stat total"><small>مجموع قرض باقی‌مانده</small><strong id="debtTotal">۰ افغانی</strong></div>
+</div>
+<nav><button onclick="showTab('customers')">مشتریان</button><button class="secondary" onclick="showTab('add')">+ مشتری جدید</button><button class="secondary" onclick="showTab('backup')">پشتیبان</button><button class="secondary" onclick="showTab('about')">درباره برنامه</button><button class="secondary" onclick="toggleLanguage()">دری / پښتو</button><button class="secondary" onclick="logout()">خروج</button></nav>
+<section id="customersTab"><div class="panel"><input id="search" placeholder="جستجوی نام یا شماره مشتری..." oninput="renderCustomers()"></div><div class="panel"><h2>فهرست مشتریان</h2><div id="customerList"></div></div></section>
+<section id="addTab" class="hidden"><div class="panel"><h2 id="formTitle">ثبت مشتری جدید</h2><label>نام مشتری</label><input id="customerName" placeholder="نام کامل مشتری"><label>شماره تلفن (اختیاری)</label><input id="customerPhone" inputmode="tel" placeholder="شماره تماس"><button onclick="saveCustomer()">ذخیره مشتری</button> <button class="secondary" onclick="showTab('customers')">انصراف</button></div></section>
+<section id="detailTab" class="hidden"><div class="panel"><button class="secondary small" onclick="showTab('customers')">← برگشت</button><h2 id="detailName" style="margin-top:12px"></h2><div class="stat total"><small>قرض باقی‌مانده</small><strong id="detailBalance">۰ افغانی</strong></div><div class="row" style="margin-top:12px"><button onclick="openTransaction('debt')">ثبت قرض جدید</button><button style="background:#16845b" onclick="openTransaction('payment')">ثبت پرداخت</button></div></div>
+<div id="transactionForm" class="panel hidden"><h2 id="transactionTitle"></h2><label>مبلغ (افغانی)</label><input id="txAmount" type="number" min="1" inputmode="decimal" placeholder="مثلاً ۵۰۰"><label>تاریخ خرید یا پرداخت (اختیاری)</label><input id="txDate" type="text" inputmode="numeric" placeholder="مثلاً ۱۴۰۵/۰۸/۲۰ یا خالی بگذارید"><label>توضیحات (اختیاری)</label><input id="txNote" placeholder="مثلاً خرید برنج و روغن"><button onclick="saveTransaction()">ثبت</button> <button class="secondary" onclick="document.getElementById('transactionForm').classList.add('hidden')">انصراف</button></div>
+<div class="panel"><h2>تاریخچه حساب</h2><div id="history"></div></div></section>
+<section id="aboutTab" class="hidden"><div class="panel" style="text-align:center">
+<h2>درباره برنامه</h2>
+<img src="owner-photo.jpg" alt="عکس صاحب برنامه" style="width:112px;height:112px;object-fit:cover;border-radius:50%;border:3px solid #1459b8;padding:3px;background:#fff;display:block;margin:12px auto 16px">
+<p><strong>نام برنامه:</strong> سوپرمارکت خیبر</p>
+<p><strong>نام صاحب و مدیر برنامه:</strong> فرهاد صافی</p>
+<p><strong>نام فروشگاه:</strong> خوراکه فروشی سوپر مارکیت خیبر</p>
+<p><strong>عنوان:</strong> صاحب و مدیر برنامه</p>
+<p class="notice">این برنامه برای مدیریت مشتریان، قرض‌ها و پرداخت‌های فروشگاه ساخته شده است.</p>
+</div></section>
+<section id="backupTab" class="hidden"><div class="panel"><h2>پشتیبان‌گیری</h2><p class="notice">اطلاعات پس از هر تغییر به‌طور خودکار در حافظه امن همین برنامه ذخیره می‌شود. برای انتقال به گوشی دیگر، فایل پشتیبان را صادر کنید.</p><button onclick="exportBackup()">ساخت و اشتراک فایل پشتیبان</button><hr><label>بازیابی از فایل پشتیبان JSON</label><input id="backupFile" type="file" accept=".json,application/json"><button class="secondary" onclick="importBackup()">بازیابی اطلاعات</button><p class="notice">بازیابی، اطلاعات فعلی را جایگزین می‌کند.</p></div></section>
+</section><footer>نسخه ۱٫۰ · اطلاعات فقط در همین دستگاه نگهداری می‌شود.</footer></main>
+<script>
+const KEY='khyber_shop_debts_v1', AUTH='khyber_shop_auth_v1';
+let db=loadDb(),activeId=null,txType='debt',editingId=null,lang='fa',auth=loadAuth();
+const SHOP='khyber_shop_brand_v1';
+let shopBrand=loadShopBrand(),selectedLogo=null;
+function loadShopBrand(){try{return JSON.parse(localStorage.getItem(SHOP))||null}catch(e){return null}}
+function applyShopBrand(){if(!shopBrand)return;document.getElementById('shopTitle').textContent=shopBrand.name;document.title=shopBrand.name;const im=document.getElementById('shopLogo');if(shopBrand.logo){im.src=shopBrand.logo;im.classList.add('visible')}else{im.removeAttribute('src');im.classList.remove('visible')}}
+function showInitialScreen(){document.getElementById('setupScreen').classList.toggle('hidden',!!shopBrand);document.getElementById('loginScreen').classList.toggle('hidden',!shopBrand);document.getElementById('appScreen').classList.add('hidden');if(shopBrand)applyShopBrand()}
+document.getElementById('shopLogoInput').addEventListener('change',function(){const f=this.files&&this.files[0];if(!f)return;if(!f.type.startsWith('image/')){alert('لطفاً یک تصویر انتخاب کنید.');this.value='';return}const reader=new FileReader();reader.onload=()=>{const img=new Image();img.onload=()=>{const canvas=document.createElement('canvas'),max=512,scale=Math.min(1,max/Math.max(img.width,img.height));canvas.width=Math.round(img.width*scale);canvas.height=Math.round(img.height*scale);canvas.getContext('2d').drawImage(img,0,0,canvas.width,canvas.height);selectedLogo=canvas.toDataURL('image/jpeg',0.82);document.getElementById('logoPreview').innerHTML='<img alt="پیش‌نمایش لوگو" src="'+selectedLogo+'">'};img.src=reader.result};reader.readAsDataURL(f)});
+function saveShopSetup(){const name=document.getElementById('shopNameInput').value.trim();if(!name){alert('لطفاً نام دوکان را وارد کنید.');return}shopBrand={name,logo:selectedLogo||''};try{localStorage.setItem(SHOP,JSON.stringify(shopBrand))}catch(e){alert('ذخیره لوگو انجام نشد. لطفاً یک تصویر کوچک‌تر انتخاب کنید.');return}applyShopBrand();showInitialScreen()}
+function loadDb(){try{let s=localStorage.getItem(KEY);if(s)return JSON.parse(s);let b=window.KhyberBackup?.loadBackup();if(b){localStorage.setItem(KEY,b);return JSON.parse(b)}}catch(e){}return{customers:[]}}
+function loadAuth(){try{return JSON.parse(localStorage.getItem(AUTH))||{password:'Mohammad@1234',mustChange:true}}catch(e){return{password:'Mohammad@1234',mustChange:true}}}
+function persist(){let s=JSON.stringify(db);localStorage.setItem(KEY,s);try{window.KhyberBackup?.saveBackup(s)}catch(e){}render()}
+function newId(){return (window.crypto&&typeof crypto.randomUUID==='function')?crypto.randomUUID():'kh-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,10)}
+function fmt(n){return new Intl.NumberFormat('fa-IR').format(n||0)+' افغانی'}
+function balance(c){return c.transactions.reduce((s,t)=>s+(t.type==='debt'?t.amount:-t.amount),0)}
+function totalPaid(){return db.customers.reduce((s,c)=>s+c.transactions.filter(t=>t.type==='payment').reduce((a,t)=>a+t.amount,0),0)}
+function login(){let u=document.getElementById('username').value.trim(),p=document.getElementById('password').value;if(u!=='admin'||p!==auth.password){alert('نام کاربری یا رمز عبور اشتباه است.');return}if(auth.mustChange){document.getElementById('firstChange').classList.remove('hidden');return}enterApp()}
+function changePassword(){let p=document.getElementById('newPassword').value;if(p.length<8||!/^[\x21-\x7E]+$/.test(p)){alert('رمز باید حداقل ۸ حرف انگلیسی داشته باشد.');return}auth.password=p;auth.mustChange=false;localStorage.setItem(AUTH,JSON.stringify(auth));alert('رمز جدید ذخیره شد.');enterApp()}
+function enterApp(){applyShopBrand();document.getElementById('loginScreen').classList.add('hidden');document.getElementById('appScreen').classList.remove('hidden');render()}
+function logout(){document.getElementById('appScreen').classList.add('hidden');document.getElementById('loginScreen').classList.remove('hidden');document.getElementById('password').value=''}
+function showTab(tab){['customers','add','detail','backup','about'].forEach(x=>document.getElementById(x+'Tab').classList.toggle('hidden',x!==tab));if(tab==='add'&&!editingId){document.getElementById('formTitle').textContent='ثبت مشتری جدید';document.getElementById('customerName').value='';document.getElementById('customerPhone').value=''}}
+function render(){document.getElementById('customerCount').textContent=new Intl.NumberFormat('fa-IR').format(db.customers.length);document.getElementById('debtTotal').textContent=fmt(db.customers.reduce((s,c)=>s+balance(c),0));document.getElementById('paidTotal').textContent=fmt(totalPaid());renderCustomers();if(activeId)renderDetail()}
+function renderCustomers(){let q=(document.getElementById('search')?.value||'').trim().toLowerCase(),list=db.customers.filter(c=>c.name.toLowerCase().includes(q)||(c.phone||'').includes(q));document.getElementById('customerList').innerHTML=list.length?list.map(c=>`<div class="customer"><div class="customer-top"><strong>${esc(c.name)}</strong><span class="balance">${fmt(balance(c))}</span></div><div class="muted">${esc(c.phone||'شماره ثبت نشده')}</div><div class="actions"><button class="small" onclick="openDetail('${c.id}')">مشاهده حساب</button><button class="small secondary" onclick="editCustomer('${c.id}')">ویرایش</button></div></div>`).join(''):'<div class="empty">هنوز مشتری ثبت نشده است.</div>'}
+function saveCustomer(){let name=document.getElementById('customerName').value.trim(),phone=document.getElementById('customerPhone').value.trim();if(!name){alert('لطفاً نام مشتری را وارد کنید.');return}if(editingId){let c=db.customers.find(x=>x.id===editingId);c.name=name;c.phone=phone}else db.customers.unshift({id:newId(),name,phone,transactions:[]});persist();showTab('customers')}
+function editCustomer(id){let c=db.customers.find(x=>x.id===id);editingId=id;document.getElementById('formTitle').textContent='ویرایش مشتری';document.getElementById('customerName').value=c.name;document.getElementById('customerPhone').value=c.phone||'';showTab('add');editingId=id}
+function openDetail(id){activeId=id;showTab('detail');renderDetail()}
+function renderDetail(){let c=db.customers.find(x=>x.id===activeId);if(!c)return;document.getElementById('detailName').textContent=c.name;document.getElementById('detailBalance').textContent=fmt(balance(c));document.getElementById('history').innerHTML=c.transactions.length?[...c.transactions].reverse().map(t=>`<div class="transaction"><div><strong>${t.type==='debt'?'قرض / خرید':'پرداخت پول'}</strong><div class="muted">${esc(t.date||'بدون تاریخ')} · ${esc(t.note||'بدون توضیحات')}</div></div><span class="${t.type==='debt'?'plus':'minus'}">${t.type==='debt'?'+':'−'} ${fmt(t.amount)}</span></div>`).join(''):'<div class="empty">هنوز هیچ خرید یا پرداختی ثبت نشده است.</div>'}
+function openTransaction(type){txType=type;document.getElementById('transactionForm').classList.remove('hidden');document.getElementById('transactionTitle').textContent=type==='debt'?'ثبت قرض / خرید جدید':'ثبت پرداخت مشتری';document.getElementById('txAmount').value='';document.getElementById('txDate').value='';document.getElementById('txNote').value=''}
+function saveTransaction(){let amount=Number(document.getElementById('txAmount').value),date=document.getElementById('txDate').value,note=document.getElementById('txNote').value.trim();if(!Number.isFinite(amount)||amount<=0){alert('لطفاً مبلغ معتبر وارد کنید.');return}let c=db.customers.find(x=>x.id===activeId);if(txType==='payment'&&amount>balance(c)&&!confirm('مبلغ پرداخت از قرض فعلی بیشتر است. ثبت شود؟'))return;c.transactions.push({id:newId(),type:txType,amount,date,note});persist();document.getElementById('transactionForm').classList.add('hidden')}
+function exportBackup(){let s=JSON.stringify({app:'khyber-supermarket',version:1,exportedAt:new Date().toISOString(),data:db,shopBrand:shopBrand});if(window.KhyberBackup?.shareBackup){window.KhyberBackup.shareBackup(s);return}let a=document.createElement('a'),u=URL.createObjectURL(new Blob([s],{type:'application/json'}));a.href=u;a.download='Khyber-Backup.json';a.click();URL.revokeObjectURL(u)}
+function importBackup(){let f=document.getElementById('backupFile').files[0];if(!f){alert('ابتدا فایل پشتیبان را انتخاب کنید.');return}if(f.size>10*1024*1024){alert('حجم فایل پشتیبان بیش از حد بزرگ است.');return}let r=new FileReader();r.onload=()=>{try{let o=JSON.parse(r.result),d=o.data||o;if(o.app&&o.app!=='khyber-supermarket')throw Error('app');if(!Array.isArray(d.customers))throw Error('customers');d.customers.forEach(c=>{if(!c||typeof c.name!=='string'||!Array.isArray(c.transactions))throw Error('customer');c.transactions.forEach(t=>{if(!t||!['debt','payment'].includes(t.type)||!Number.isFinite(Number(t.amount))||Number(t.amount)<=0)throw Error('transaction')})});if(confirm('اطلاعات فعلی جایگزین شود؟')){db=d;if(o.shopBrand&&typeof o.shopBrand.name==='string'){shopBrand={name:o.shopBrand.name,logo:typeof o.shopBrand.logo==='string'?o.shopBrand.logo:''};localStorage.setItem(SHOP,JSON.stringify(shopBrand));applyShopBrand()}persist();showTab('customers');document.getElementById('backupFile').value='';alert('بازیابی انجام شد.')}}catch(e){alert('فایل پشتیبان معتبر نیست یا ساختار آن با برنامه سازگار نیست.')}};r.readAsText(f)}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function toggleLanguage(){lang=lang==='fa'?'ps':'fa';alert(lang==='ps'?'د پښتو بشپړه ژباړه به په راتلونکې نسخه کې ورزیاته شي.':'زبان دری انتخاب شد.')}
+showInitialScreen();
+</script></body></html>
