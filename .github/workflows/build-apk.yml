@@ -48,7 +48,7 @@ jobs:
           test -n "$KEY_ALIAS" || (echo 'Missing ANDROID_KEY_ALIAS secret' && exit 1)
           test -n "$KEY_PASSWORD" || (echo 'Missing ANDROID_KEY_PASSWORD secret' && exit 1)
           test -n "$STORE_PASSWORD" || (echo 'Missing ANDROID_STORE_PASSWORD secret' && exit 1)
-          echo "$KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/release-key.jks"
+          printf '%s' "$KEYSTORE_BASE64" | tr -d '[:space:]' | base64 --decode > "$RUNNER_TEMP/release-key.jks"
       - name: Build signed Android App Bundle
         env:
           ANDROID_KEYSTORE_PATH: ${{ runner.temp }}/release-key.jks
